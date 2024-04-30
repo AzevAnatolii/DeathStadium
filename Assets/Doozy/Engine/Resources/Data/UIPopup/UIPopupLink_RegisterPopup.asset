@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17215f689fb19554ab6b81c2308113df, type: 3}
-  m_Name: UIPopupLink_PopupATT
+  m_Name: UIPopupLink_RegisterPopup
   m_EditorClassIdentifier: 
-  PopupName: PopupATT
-  Prefab: {fileID: 5807580946855058740, guid: 742f0bf639c56994dbd0f9e57c39c486, type: 3}
+  PopupName: RegisterPopup
+  Prefab: {fileID: 7603266705517509956, guid: b483341bb6d46534bad0bc1309384501, type: 3}

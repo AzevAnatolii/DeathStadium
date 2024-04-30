@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: _UIPopupDatabase
   m_EditorClassIdentifier: 
   PopupNames:
-  - PopupATT
+  - RegisterPopup
   Popups:
   - {fileID: 11400000, guid: d53e865a62ab51a40ad92763f46b9ee2, type: 2}
