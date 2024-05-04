@@ -1,69 +1,53 @@
 using Doozy.Engine.UI;
 using Mirror;
-using TMPro;
 using UnityEngine;
 
-namespace _App.Scripts.Lobby
+internal class LobbyController : NetworkBehaviour
 {
-    internal class LobbyController : NetworkBehaviour
+    public static LobbyController Instance { get; private set; }
+
+    [SerializeField] private UIButton _playButton;
+    [SerializeField] private UIButton _exitButton;
+    
+
+    private void Awake()
     {
-        private const string USER_NAME_KEY = "user_name";
-        
-        [SerializeField] private UIButton _startButton;
-        [SerializeField] private UIButton _registerButton;
-        [SerializeField] private UIButton _exitButton;
-        [SerializeField] private TMP_Text _userName;
-
-        private void Start()
+        if (Instance != null)
         {
-            string userName = PlayerPrefs.GetString(USER_NAME_KEY);
-            bool isUserRegistered = IsUserNameValid(userName);
-            _startButton.gameObject.SetActive(isUserRegistered);
-            _registerButton.gameObject.SetActive(!isUserRegistered);
-            if (isUserRegistered)
-            {
-                _userName.text = userName;
-            }
-
-            _startButton.OnClick.OnTrigger.Action = OnStartButtonClick;
-            _registerButton.OnClick.OnTrigger.Action = OnRegisterButtonClick;
-            _exitButton.OnClick.OnTrigger.Action = OnExitButtonClick;
+            Destroy(gameObject);
+            return;
         }
 
-        private bool IsUserNameValid(string userName)
-        {
-            return string.IsNullOrWhiteSpace(userName) == false && userName.Length is >= 4 and < 10;
-        }
+        Instance = this;
+        _playButton.OnClick.OnTrigger.Action = OnPlayButtonClicked;
+        _exitButton.OnClick.OnTrigger.Action = OnExitButtonClicked;
+    }
 
-        private void OnRegisterButtonClick(GameObject obj)
+    private void OnPlayButtonClicked(GameObject obj)
+    {
+        var matchListPopup = UIPopupManager.ShowPopup("MatchListPopup", false, false);
+        if (matchListPopup.TryGetComponent(out MatchListPopup popup))
         {
-            UIPopup popup = UIPopupManager.ShowPopup("RegisterPopup", false, false);
-            if (popup.TryGetComponent(out RegisterPopup registerPopup))
-            {
-                registerPopup.OnUserNameRegistered += OnUserNameRegistered;
-            }
+            popup.Init(OnCreateMatchButtonClicked, OnJoinMatchButtonClicked);            
         }
+        else
+        {
+            Destroy(matchListPopup.gameObject);
+        }
+    }
 
-        private void OnUserNameRegistered(RegisterPopup popup, string userName)
-        {
-            popup.OnUserNameRegistered -= OnUserNameRegistered;
-            if (IsUserNameValid(userName))
-            {
-                PlayerPrefs.SetString(USER_NAME_KEY, userName);
-                PlayerPrefs.Save();
-                _userName.text = userName;
-                _registerButton.gameObject.SetActive(false);
-                _startButton.gameObject.SetActive(true);
-            }
-        }
+    private void OnCreateMatchButtonClicked()
+    {
+        Player.LocalPlayer.CreateMatch();
+    }
 
-        private void OnStartButtonClick(GameObject obj)
-        {
-        }
+    private void OnJoinMatchButtonClicked(string matchName)
+    {
+        Player.LocalPlayer.JoinMatch(matchName);
+    }
 
-        private void OnExitButtonClick(GameObject obj)
-        {
-            Application.Quit();
-        }
+    private void OnExitButtonClicked(GameObject obj)
+    {
+        Application.Quit();
     }
 }

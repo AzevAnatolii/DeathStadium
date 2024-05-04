@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PopupNames:
   - RegisterPopup
+  - MatchListPopup
   Popups:
   - {fileID: 11400000, guid: d53e865a62ab51a40ad92763f46b9ee2, type: 2}
+  - {fileID: 11400000, guid: b8d758a6c47cd9341b9bb891c4076af4, type: 2}
