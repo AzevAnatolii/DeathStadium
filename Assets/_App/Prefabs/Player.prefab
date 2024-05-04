@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 7588798708873049425}
   - component: {fileID: 879464451956311349}
   - component: {fileID: 4665680538857954272}
-  - component: {fileID: 3322679073110948593}
   - component: {fileID: 6465159449832408342}
+  - component: {fileID: 1057722275837994452}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -176,23 +176,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 3.71}
   m_Size: {x: 3.9, y: 8}
   m_Direction: 0
---- !u!114 &3322679073110948593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7963529765928098712}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f075d1622e57f7f4bbdb6b069d97d8f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  rigidbody2D: {fileID: 879464451956311349}
-  speed: 20
 --- !u!114 &6465159449832408342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,9 +191,25 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _mover: {fileID: 3322679073110948593}
+  _mover: {fileID: 1057722275837994452}
   _view: {fileID: 8101024023692696543}
   _nameText: {fileID: 0}
+--- !u!114 &1057722275837994452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7963529765928098712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f075d1622e57f7f4bbdb6b069d97d8f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _speed: {x: 0, y: 1, z: 0}
 --- !u!1001 &8984109219927484046
 PrefabInstance:
   m_ObjectHideFlags: 0

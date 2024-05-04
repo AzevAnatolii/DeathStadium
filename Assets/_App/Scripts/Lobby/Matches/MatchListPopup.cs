@@ -6,15 +6,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MatchListPopup : MonoBehaviour
-{
+{    
     [SerializeField] private UIPopup _popup;
     [SerializeField] private UIButton _createMatchButton;
     [SerializeField] private UIButton _closeButton;
     [SerializeField] private Transform _listParent;
     [SerializeField] private MatchItem _matchItemPrefab;
     
+    private const string GAME_SCENE_NAME = "GameScene";
+    
     private List<MatchItem> _matchItems;
-    private Action _createMatchCallback;
+    private Action<string> _createMatchCallback;
     private Action<string> _joinMatchCallback;
 
 
@@ -24,7 +26,7 @@ public class MatchListPopup : MonoBehaviour
         NetworkSceneManager.Instance.AvailableScenes.Callback -= MatchesOnCallback;
     }
 
-    public void Init(Action createMatchCallback, Action<string> joinMatchCallback)
+    public void Init(Action<string> createMatchCallback, Action<string> joinMatchCallback)
     {
         _createMatchCallback = createMatchCallback;
         _joinMatchCallback = joinMatchCallback;
@@ -75,7 +77,7 @@ public class MatchListPopup : MonoBehaviour
     private void OnCreateMatchButtonClicked(GameObject obj)
     {
         _popup.Hide(true);
-        _createMatchCallback?.Invoke();
+        _createMatchCallback?.Invoke(GAME_SCENE_NAME);
     }
     
     private void OnJoinMatchButtonClicked(string matchName)

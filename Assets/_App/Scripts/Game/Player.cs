@@ -7,7 +7,7 @@ public class Player : NetworkBehaviour
     public static Player LocalPlayer;
     private const string NAME_KEY = "PlayerName";
     
-    [SerializeField] private PlayerMovement _mover;
+    [SerializeField] private PlayerMover _mover;
     [SerializeField] private GameObject _view;
     [SerializeField] private TextMeshProUGUI _nameText;
     
@@ -32,7 +32,7 @@ public class Player : NetworkBehaviour
         
         if (PlayerPrefs.HasKey(NAME_KEY))
         {
-            var newName = PlayerPrefs.GetString(NAME_KEY, "");
+            var newName = PlayerPrefs.GetString(NAME_KEY, string.Empty);
             SetPlayerNameOnServer(newName);
             //_nameText.text = newName;
         }
@@ -56,11 +56,10 @@ public class Player : NetworkBehaviour
         _view.SetActive(true);
     }
     
-    public void CreateMatch()
+    public void CreateMatch(string levelName)
     {
         if (!isOwned) return;
-        CommandCreateMatch();
-        _mover.Unfreeze();
+        CommandCreateMatch(levelName);
         _view.SetActive(true);
     }
     
@@ -68,14 +67,13 @@ public class Player : NetworkBehaviour
     {
         if (!isOwned) return;
         CommandConnectToMatch(matchName);
-        _mover.Unfreeze();
         _view.SetActive(true);
     }
     
     [Command]
-    private void CommandCreateMatch()
+    private void CommandCreateMatch(string levelName)
     {
-        StartCoroutine(NetworkSceneManager.Instance.ServerCreateSubScene(this));
+        StartCoroutine(NetworkSceneManager.Instance.ServerCreateSubScene(this, levelName));
     }
 
     [Command]

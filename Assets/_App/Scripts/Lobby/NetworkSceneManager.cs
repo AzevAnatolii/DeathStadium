@@ -7,6 +7,7 @@ public class NetworkSceneManager : NetworkBehaviour
 {
     public static NetworkSceneManager Instance;
 
+    private readonly LoadSceneParameters _sceneLoadParams = new (LoadSceneMode.Single, LocalPhysicsMode.Physics3D);
     private readonly SyncDictionary<string, Scene> _availableScenes = new ();
     public SyncDictionary<string, Scene> AvailableScenes => _availableScenes;
     
@@ -22,17 +23,17 @@ public class NetworkSceneManager : NetworkBehaviour
     }
 
     [ServerCallback]
-    public IEnumerator ServerCreateSubScene(Player player)
+    public IEnumerator ServerCreateSubScene(Player player, string sceneName)
     {
-        var asyncLoad = SceneManager.LoadSceneAsync("GameScene", new LoadSceneParameters
-        {
-            loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D
-        });
+        DontDestroyOnLoad(player.connectionToClient.identity.gameObject);
+        
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName, _sceneLoadParams);
         
         yield return new WaitUntil(() => asyncLoad.isDone);
         
         var lastLoadedSceneIndex = SceneManager.sceneCount - 1;
         var lastLoadedScene = SceneManager.GetSceneAt(lastLoadedSceneIndex);
+        lastLoadedScene = SceneManager.GetActiveScene();
 
         if (!_availableScenes.ContainsKey(player.Name))
         {

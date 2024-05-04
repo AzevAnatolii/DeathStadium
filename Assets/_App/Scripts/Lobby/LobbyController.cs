@@ -36,9 +36,9 @@ internal class LobbyController : NetworkBehaviour
         }
     }
 
-    private void OnCreateMatchButtonClicked()
+    private void OnCreateMatchButtonClicked(string levelName)
     {
-        Player.LocalPlayer.CreateMatch();
+        Player.LocalPlayer.CreateMatch(levelName);
     }
 
     private void OnJoinMatchButtonClicked(string matchName)

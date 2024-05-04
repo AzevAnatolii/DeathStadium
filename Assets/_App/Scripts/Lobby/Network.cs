@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class Network : NetworkManager
 {
-    [SerializeField] private bool isServer;
-    [Scene] public string gameScene;
+    [SerializeField] private bool _isServer;
     
     public override void Start()
     {
         base.Start();
 #if UNITY_EDITOR
-        if (isServer)
+        if (_isServer)
         {
             StartServer();
         }
@@ -30,11 +29,11 @@ public class Network : NetworkManager
 #endif
     }
 
-    public override void OnServerConnect(NetworkConnectionToClient conn)
+    public override void OnServerConnect(NetworkConnectionToClient connection)
     {
-        base.OnServerConnect(conn);
+        base.OnServerConnect(connection);
         var player = Instantiate(playerPrefab);
-        NetworkServer.AddPlayerForConnection(conn ,player);
+        NetworkServer.AddPlayerForConnection(connection, player);
     }
 
     public override void OnClientConnect()
