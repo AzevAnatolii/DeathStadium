@@ -20,6 +20,7 @@ public class NetworkSceneManager : NetworkBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     [ServerCallback]

@@ -7,7 +7,6 @@ public class Network : NetworkManager
     
     public override void Start()
     {
-        base.Start();
 #if UNITY_EDITOR
         if (_isServer)
         {
@@ -18,14 +17,7 @@ public class Network : NetworkManager
             StartClient();
         }
 #else
-        if (Application.isBatchMode)
-        {
-            StartServer();
-        }
-        else
-        {
-            StartClient();
-        }
+        base.Start();
 #endif
     }
 
