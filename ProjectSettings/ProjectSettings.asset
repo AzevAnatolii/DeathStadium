@@ -806,7 +806,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: MIRROR;MIRROR_79_OR_NEWER;MIRROR_81_OR_NEWER;MIRROR_82_OR_NEWER;MIRROR_83_OR_NEWER;MIRROR_84_OR_NEWER;MIRROR_85_OR_NEWER;MIRROR_86_OR_NEWER;MIRROR_89_OR_NEWER
+    Android: MIRROR;MIRROR_79_OR_NEWER;MIRROR_81_OR_NEWER;MIRROR_82_OR_NEWER;MIRROR_83_OR_NEWER;MIRROR_84_OR_NEWER;MIRROR_85_OR_NEWER;MIRROR_86_OR_NEWER;MIRROR_89_OR_NEWER;dUI_MANAGER;dUI_TextMeshPro
+    EmbeddedLinux: dUI_MANAGER;dUI_TextMeshPro
+    GameCoreScarlett: dUI_MANAGER;dUI_TextMeshPro
+    GameCoreXboxOne: dUI_MANAGER;dUI_TextMeshPro
+    LinuxHeadlessSimulation: dUI_MANAGER;dUI_TextMeshPro
+    Nintendo Switch: dUI_MANAGER;dUI_TextMeshPro
+    PS4: dUI_MANAGER;dUI_TextMeshPro
+    PS5: dUI_MANAGER;dUI_TextMeshPro
+    QNX: dUI_MANAGER;dUI_TextMeshPro
+    Stadia: dUI_MANAGER;dUI_TextMeshPro
+    Standalone: MIRROR;MIRROR_79_OR_NEWER;MIRROR_81_OR_NEWER;MIRROR_82_OR_NEWER;MIRROR_83_OR_NEWER;MIRROR_84_OR_NEWER;MIRROR_85_OR_NEWER;MIRROR_86_OR_NEWER;MIRROR_89_OR_NEWER;dUI_MANAGER;dUI_TextMeshPro
+    VisionOS: dUI_MANAGER;dUI_TextMeshPro
+    WebGL: dUI_MANAGER;dUI_TextMeshPro
+    Windows Store Apps: dUI_MANAGER;dUI_TextMeshPro
+    XboxOne: dUI_MANAGER;dUI_TextMeshPro
+    iPhone: dUI_MANAGER;dUI_TextMeshPro
+    tvOS: dUI_MANAGER;dUI_TextMeshPro
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
@@ -839,7 +855,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: DeathStadium
-  metroPackageVersion: 
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -847,7 +863,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: DeathStadium
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: DeathStadium
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -913,7 +929,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 0
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 
   framebufferDepthMemorylessMode: 0
