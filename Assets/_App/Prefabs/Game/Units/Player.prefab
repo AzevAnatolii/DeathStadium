@@ -121,6 +121,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _speed: 0.03
 --- !u!1001 &8984109219927484046
 PrefabInstance:
   m_ObjectHideFlags: 0
