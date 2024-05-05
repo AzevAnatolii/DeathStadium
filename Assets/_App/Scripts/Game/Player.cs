@@ -1,19 +1,20 @@
+using System;
 using Mirror;
 using TMPro;
 using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
-    public static Player LocalPlayer;
+    public static Player LocalPlayer { get; private set; }
+    public static event Action<Player> OnLocalPlayerStart; 
     
     [SerializeField] private PlayerMover _mover;
     [SerializeField] private GameObject _view;
     [SerializeField] private TextMeshProUGUI _nameText;
     
-    [SyncVar] private string _name;
-    public string Name => _name; 
-    
-    
+    [SyncVar][SerializeField] private string _name;
+    public string Name => _name;
+
     private void Start()
     {
         _view.SetActive(false);
@@ -28,9 +29,11 @@ public class Player : NetworkBehaviour
     {
         base.OnStartAuthority();
         
+        DebugExt.Log(this, $"OnStartAuthority {isLocalPlayer}");
         if (isLocalPlayer)
         {
             LocalPlayer = this;
+            OnLocalPlayerStart?.Invoke(this);    
         }
     }
 
@@ -39,6 +42,7 @@ public class Player : NetworkBehaviour
         if (!isOwned) return;
         //_nameText.text = playerName;
         SetPlayerNameOnServer(playerName);
+        DebugExt.Log(this, $"SetName {playerName}");
     }
 
     public void SetViewEnable()
@@ -51,6 +55,7 @@ public class Player : NetworkBehaviour
         if (!isOwned) return;
         CommandCreateMatch(levelName);
         _view.SetActive(true);
+        DebugExt.Log(this, $"CreateMatch name {_name}");
     }
     
     public void JoinMatch(string matchName)
@@ -58,6 +63,7 @@ public class Player : NetworkBehaviour
         if (!isOwned) return;
         CommandConnectToMatch(matchName);
         _view.SetActive(true);
+        DebugExt.Log(this, $"JoinMatch name {_name}   match {matchName}");
     }
     
     [Command]

@@ -30,17 +30,43 @@ internal class LobbyController : NetworkBehaviour
 
     private void Init()
     {                                                                  
-        string userName = PlayerPrefs.GetString(NAME_KEY);
-        bool isNameValid = IsNameValid(userName);
-        _userNameText.text = userName;
-        _userNameText.transform.parent.gameObject.SetActive(isNameValid);
-
-        _playButton.gameObject.SetActive(isNameValid);
-        _registerButton.gameObject.SetActive(!isNameValid);
-
+        _userName = PlayerPrefs.GetString(NAME_KEY);
+        UpdatePlayerName(Player.LocalPlayer);
+        UpdateView();        
         _registerButton.OnClick.OnTrigger.Action = OnRegisterButtonClicked;
         _playButton.OnClick.OnTrigger.Action = OnPlayButtonClicked;
         _exitButton.OnClick.OnTrigger.Action = OnExitButtonClicked;        
+        DebugExt.Log(this, "Init");
+    }
+
+    private void UpdatePlayerName(Player player)
+    {
+        bool isNameValid = IsNameValid(_userName);
+        if (isNameValid && player != null)
+        {
+            player.SetName(_userName);
+        }
+        else
+        {
+            Player.OnLocalPlayerStart -= OnLocalPlayerStart;
+            Player.OnLocalPlayerStart += OnLocalPlayerStart;
+        }
+    }
+
+    private void OnLocalPlayerStart(Player player)
+    {
+        player.SetName(_userName);    
+        Player.OnLocalPlayerStart -= OnLocalPlayerStart;
+        DebugExt.Log(this, "OnLocalPlayerStart");
+    }
+
+    private void UpdateView()
+    {
+        bool isNameValid = IsNameValid(_userName);
+        _userNameText.text = _userName;
+        _userNameText.transform.parent.gameObject.SetActive(isNameValid);
+        _playButton.gameObject.SetActive(isNameValid);
+        _registerButton.gameObject.SetActive(!isNameValid);
     }
 
     private bool IsNameValid(string s)
@@ -66,9 +92,7 @@ internal class LobbyController : NetworkBehaviour
         _userName = userName;
         PlayerPrefs.SetString(NAME_KEY, userName);
         Player.LocalPlayer.SetName(userName);
-        bool isNameValid = IsNameValid(userName);
-        _userNameText.text = userName;
-        _userNameText.transform.parent.gameObject.SetActive(isNameValid);
+        UpdateView();
     }
 
     private void OnPlayButtonClicked(GameObject obj)

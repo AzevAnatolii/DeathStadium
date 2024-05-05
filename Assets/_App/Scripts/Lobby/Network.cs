@@ -2,7 +2,7 @@ using Mirror;
 using UnityEngine;
 
 public class Network : NetworkManager
-{
+{    
     [SerializeField] private bool _isServer;
     
     public override void Start()
@@ -24,19 +24,20 @@ public class Network : NetworkManager
     public override void OnServerConnect(NetworkConnectionToClient connection)
     {
         base.OnServerConnect(connection);
-        var player = Instantiate(playerPrefab);
-        NetworkServer.AddPlayerForConnection(connection, player);
+        GameObject playerObj = Instantiate(playerPrefab);
+        NetworkServer.AddPlayerForConnection(connection, playerObj);
+        DebugExt.Log(this, "Server Connected");
     }
 
     public override void OnClientConnect()
     {
         base.OnClientConnect();
-        Debug.Log("Client Connected");
+        DebugExt.Log(this, "Client Connected");
     }
 
     public override void OnClientError(TransportError error, string reason)
     {
         base.OnClientError(error, reason);
-        Debug.Log($"Client Error : {error} > {reason}");
+        DebugExt.Log(this, $"Client Error : {error} > {reason}");
     }
 }
