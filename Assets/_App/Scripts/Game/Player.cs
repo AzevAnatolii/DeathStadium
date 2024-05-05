@@ -5,7 +5,6 @@ using UnityEngine;
 public class Player : NetworkBehaviour
 {
     public static Player LocalPlayer;
-    private const string NAME_KEY = "PlayerName";
     
     [SerializeField] private PlayerMover _mover;
     [SerializeField] private GameObject _view;
@@ -17,7 +16,6 @@ public class Player : NetworkBehaviour
     
     private void Start()
     {
-        _name = "Dima";
         _view.SetActive(false);
         
         if (!isOwned)
@@ -30,25 +28,17 @@ public class Player : NetworkBehaviour
     {
         base.OnStartAuthority();
         
-        if (PlayerPrefs.HasKey(NAME_KEY))
-        {
-            var newName = PlayerPrefs.GetString(NAME_KEY, string.Empty);
-            SetPlayerNameOnServer(newName);
-            //_nameText.text = newName;
-        }
-        
         if (isLocalPlayer)
         {
             LocalPlayer = this;
         }
     }
 
-    public void SetPlayerName(string newName)
+    public void SetName(string playerName)
     {
         if (!isOwned) return;
-        PlayerPrefs.SetString(NAME_KEY, newName);
-        _nameText.text = newName;
-        SetPlayerNameOnServer(newName);
+        //_nameText.text = playerName;
+        SetPlayerNameOnServer(playerName);
     }
 
     public void SetViewEnable()

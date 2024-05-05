@@ -1,3 +1,4 @@
+using System;
 using Doozy.Engine.UI;
 using TMPro;
 using UnityEngine;
@@ -8,8 +9,12 @@ public class RegisterPopup : MonoBehaviour
     [SerializeField] private UIButton _createUserButton;
     [SerializeField] private UIPopup _popup;
 
-    private void Start()
+    private Action<string> _onCreateUserCallback;
+
+
+    public void Init(Action<string> onCreateUserCallback)
     {
+        _onCreateUserCallback = onCreateUserCallback;
         _createUserButton.Interactable = false;
         _createUserButton.OnClick.OnTrigger.Action = OnCreateUserButtonClicked;
         _nameInput.onValueChanged.AddListener(OnChangeValue);
@@ -29,7 +34,7 @@ public class RegisterPopup : MonoBehaviour
 
     private void OnCreateUserButtonClicked(GameObject obj)
     {
-        Player.LocalPlayer.SetPlayerName(_nameInput.text);
+        _onCreateUserCallback?.Invoke(_nameInput.text);
         _popup.Hide();
     }
 }
