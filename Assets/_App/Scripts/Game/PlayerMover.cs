@@ -1,6 +1,5 @@
 using Mirror;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMover : NetworkBehaviour
 {
@@ -25,10 +24,12 @@ public class PlayerMover : NetworkBehaviour
     public override void OnStartAuthority()
     {
         enabled = true;
+        DebugExt.Log(this, "Mover enabled");
     }
     
     public override void OnStopAuthority()
     {
         enabled = false;
+        DebugExt.Log(this, "Mover disabled");
     }
 }

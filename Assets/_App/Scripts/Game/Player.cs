@@ -8,7 +8,6 @@ public class Player : NetworkBehaviour
     public static Player LocalPlayer { get; private set; }
     public static event Action<Player> OnLocalPlayerStart; 
     
-    [SerializeField] private PlayerMover _mover;
     [SerializeField] private GameObject _view;
     [SerializeField] private TextMeshProUGUI _nameText;
     
@@ -69,13 +68,13 @@ public class Player : NetworkBehaviour
     [Command]
     private void CommandCreateMatch(string levelName)
     {
-        StartCoroutine(NetworkSceneManager.Instance.ServerCreateSubScene(this, levelName));
+        StartCoroutine(NetworkSceneManager.Instance.ServerLoadScene(this, levelName));
     }
 
     [Command]
     private void CommandConnectToMatch(string matchName)
     {
-        NetworkSceneManager.Instance.ServerConnectPlayerToMatch(this, matchName);
+        NetworkSceneManager.Instance.ServerConnectPlayerToHost(this, matchName);
     }
 
     [Command]

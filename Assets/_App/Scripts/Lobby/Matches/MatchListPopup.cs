@@ -23,7 +23,7 @@ public class MatchListPopup : MonoBehaviour
     private void OnDestroy()
     {
         _matchItems.Clear();
-        NetworkSceneManager.Instance.AvailableScenes.Callback -= MatchesOnCallback;
+        NetworkSceneManager.Instance.HostedGames.Callback -= MatchesOnCallback;
     }
 
     public void Init(Action<string> createMatchCallback, Action<string> joinMatchCallback)
@@ -34,12 +34,12 @@ public class MatchListPopup : MonoBehaviour
         _createMatchButton.OnClick.OnTrigger.Action = OnCreateMatchButtonClicked;
 
         _matchItems = new List<MatchItem>();        
-        foreach (var match in NetworkSceneManager.Instance.AvailableScenes)
+        foreach (var match in NetworkSceneManager.Instance.HostedGames)
         {
             CreateMatchItem(match.Key);
         }
-        NetworkSceneManager.Instance.AvailableScenes.Callback -= MatchesOnCallback;
-        NetworkSceneManager.Instance.AvailableScenes.Callback += MatchesOnCallback;
+        NetworkSceneManager.Instance.HostedGames.Callback -= MatchesOnCallback;
+        NetworkSceneManager.Instance.HostedGames.Callback += MatchesOnCallback;
     }
 
     private void CreateMatchItem(string matchName)

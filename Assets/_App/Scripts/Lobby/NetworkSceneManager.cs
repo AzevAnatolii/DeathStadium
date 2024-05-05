@@ -8,8 +8,8 @@ public class NetworkSceneManager : NetworkBehaviour
     public static NetworkSceneManager Instance;
 
     private readonly LoadSceneParameters _sceneLoadParams = new (LoadSceneMode.Single, LocalPhysicsMode.Physics3D);
-    private readonly SyncDictionary<string, Scene> _availableScenes = new ();
-    public SyncDictionary<string, Scene> AvailableScenes => _availableScenes;
+    private readonly SyncDictionary<string, Scene> _hostedGames = new ();
+    public SyncDictionary<string, Scene> HostedGames => _hostedGames;
     
     private void Awake()
     {
@@ -24,7 +24,7 @@ public class NetworkSceneManager : NetworkBehaviour
     }
 
     [ServerCallback]
-    public IEnumerator ServerCreateSubScene(Player player, string sceneName)
+    public IEnumerator ServerLoadScene(Player player, string sceneName)
     {
         DontDestroyOnLoad(player.connectionToClient.identity.gameObject);
         
@@ -32,31 +32,33 @@ public class NetworkSceneManager : NetworkBehaviour
         
         yield return new WaitUntil(() => asyncLoad.isDone);
         
-        var lastLoadedSceneIndex = SceneManager.sceneCount - 1;
-        var lastLoadedScene = SceneManager.GetSceneAt(lastLoadedSceneIndex);
-        lastLoadedScene = SceneManager.GetActiveScene();
-
-        if (!_availableScenes.ContainsKey(player.Name))
+        if (!_hostedGames.ContainsKey(player.Name))
         {
-            _availableScenes.Add(player.Name, lastLoadedScene);
-            player.connectionToClient.Send(new SceneMessage { sceneName = lastLoadedScene.name , sceneOperation = SceneOperation.LoadAdditive });
-            SceneManager.MoveGameObjectToScene(player.connectionToClient.identity.gameObject, _availableScenes[player.Name]);
+            _hostedGames.Add(player.Name, SceneManager.GetActiveScene());
+            player.connectionToClient.Send(new SceneMessage { sceneName = sceneName , sceneOperation = SceneOperation.Normal });
+            SceneManager.MoveGameObjectToScene(player.connectionToClient.identity.gameObject, _hostedGames[player.Name]);
             
-            Debug.Log($"Scene for {player.Name} Created!");
+            DebugExt.Log(this, $"Scene {sceneName} loaded. Player {player.Name} moved to the scene. (Active scene {SceneManager.GetActiveScene().name})");
+        }
+        else
+        {
+            DebugExt.Log(this, $"Scene {sceneName} loaded, but it's already in the list.");
         }
     }
 
     [ServerCallback]
-    public void ServerConnectPlayerToMatch(Player player, string matchName)
+    public void ServerConnectPlayerToHost(Player player, string hostName)
     {
-        if (_availableScenes.ContainsKey(matchName))
+        if (_hostedGames.TryGetValue(hostName, out Scene scene))
         {
-            var scene = _availableScenes[matchName];
-            player.connectionToClient.Send(new SceneMessage { sceneName = scene.name , sceneOperation = SceneOperation.LoadAdditive });
+            player.connectionToClient.Send(new SceneMessage { sceneName = scene.name , sceneOperation = SceneOperation.Normal });
             SceneManager.MoveGameObjectToScene(player.gameObject, scene);
-            //NetworkServer.AddPlayerForConnection(player.connectionToClient, player.gameObject);
             RpcSetPlayerActive(player);
-            _availableScenes.Remove(matchName);
+            DebugExt.Log(this, $"Connect player {player.Name} to {hostName}. (Active scene {SceneManager.GetActiveScene().name})");
+        }
+        else
+        {
+            DebugExt.Log(this, $"Can't connect player {player.Name} to {hostName}. No such host");
         }
     }
 
