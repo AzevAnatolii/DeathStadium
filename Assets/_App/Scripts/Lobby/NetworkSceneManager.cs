@@ -7,7 +7,7 @@ public class NetworkSceneManager : NetworkBehaviour
 {
     public static NetworkSceneManager Instance;
 
-    private readonly LoadSceneParameters _sceneLoadParams = new (LoadSceneMode.Single, LocalPhysicsMode.Physics3D);
+    private readonly LoadSceneParameters _sceneLoadParams = new (LoadSceneMode.Additive);
     private readonly SyncDictionary<string, Scene> _hostedGames = new ();
     public SyncDictionary<string, Scene> HostedGames => _hostedGames;
     
@@ -26,17 +26,16 @@ public class NetworkSceneManager : NetworkBehaviour
     [ServerCallback]
     public IEnumerator ServerLoadScene(Player player, string sceneName)
     {
-        DontDestroyOnLoad(player.connectionToClient.identity.gameObject);
-        
         var asyncLoad = SceneManager.LoadSceneAsync(sceneName, _sceneLoadParams);
         
         yield return new WaitUntil(() => asyncLoad.isDone);
         
         if (!_hostedGames.ContainsKey(player.Name))
         {
-            _hostedGames.Add(player.Name, SceneManager.GetActiveScene());
-            player.connectionToClient.Send(new SceneMessage { sceneName = sceneName , sceneOperation = SceneOperation.Normal });
-            SceneManager.MoveGameObjectToScene(player.connectionToClient.identity.gameObject, _hostedGames[player.Name]);
+            Scene scene = SceneManager.GetSceneByName(sceneName);
+            _hostedGames.Add(player.Name, scene);
+            player.connectionToClient.Send(new SceneMessage { sceneName = sceneName , sceneOperation = SceneOperation.LoadAdditive });
+            SceneManager.MoveGameObjectToScene(player.connectionToClient.identity.gameObject, scene);
             
             DebugExt.Log(this, $"Scene {sceneName} loaded. Player {player.Name} moved to the scene. (Active scene {SceneManager.GetActiveScene().name})");
         }
@@ -51,7 +50,7 @@ public class NetworkSceneManager : NetworkBehaviour
     {
         if (_hostedGames.TryGetValue(hostName, out Scene scene))
         {
-            player.connectionToClient.Send(new SceneMessage { sceneName = scene.name , sceneOperation = SceneOperation.Normal });
+            player.connectionToClient.Send(new SceneMessage { sceneName = scene.name , sceneOperation = SceneOperation.LoadAdditive });
             SceneManager.MoveGameObjectToScene(player.gameObject, scene);
             RpcSetPlayerActive(player);
             DebugExt.Log(this, $"Connect player {player.Name} to {hostName}. (Active scene {SceneManager.GetActiveScene().name})");
