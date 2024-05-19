@@ -243,7 +243,7 @@ GameObject:
   - component: {fileID: 1096273168627687402}
   - component: {fileID: 8046347261448632659}
   m_Layer: 0
-  m_Name: RegisterPopup
+  m_Name: LogInPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -984,9 +984,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36e9d214c1105194c86e9765e0c5eef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nameInput: {fileID: 3037081869862095747}
-  _createUserButton: {fileID: 6021882544626054549}
   _popup: {fileID: 1096273168627687402}
+  _nameInput: {fileID: 3037081869862095747}
+  _loggInButton: {fileID: 6021882544626054549}
 --- !u!1 &5911925614973512721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,7 +1286,7 @@ GameObject:
   - component: {fileID: 5005474374984023238}
   - component: {fileID: 6021882544626054549}
   m_Layer: 0
-  m_Name: CreateUserButton
+  m_Name: LogInButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4032,7 +4032,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Create user
+  m_text: Log In
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

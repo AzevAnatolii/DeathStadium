@@ -1,13 +1,17 @@
 using System.Collections.Generic;
+using _App.Scripts.Game;
 
-public class Match
+namespace _App.Scripts.Lobby.Matches
 {
-    public readonly List<Player> players = new ();
-
-    public Match() { }
-    
-    public Match(Player player)
+    internal class Match
     {
-        players.Add(player);
+        public readonly List<Player> players = new ();
+
+        public Match() { }
+    
+        public Match(Player player)
+        {
+            players.Add(player);
+        }
     }
 }

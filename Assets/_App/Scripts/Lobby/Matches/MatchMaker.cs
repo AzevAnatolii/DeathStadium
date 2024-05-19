@@ -1,21 +1,29 @@
+using _App.Scripts.Network;
 using Mirror;
 
-public class MatchMaker : NetworkBehaviour
+namespace _App.Scripts.Lobby.Matches
 {
-    public static MatchMaker Instance { get; private set; }
-
-    private readonly SyncList<Match> _matches = new ();
-    private readonly SyncList<string> _matchIDs = new ();
-
-
-    private void Awake()
+    internal class MatchMaker : NetworkBehaviour
     {
-        if (Instance != null)
+        public static MatchMaker Instance { get; private set; }
+
+        private readonly SyncList<Match> _matches = new ();
+
+
+        private void Awake()
         {
-            Destroy(gameObject);
-            return;
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
         }
 
-        Instance = this;
+        public void CreateMatch(string levelName, Client client)
+        {
+            
+        }
     }
 }

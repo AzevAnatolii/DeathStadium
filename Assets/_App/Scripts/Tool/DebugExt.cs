@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class DebugExt
+internal static class DebugExt
 {
 	public static void Log(object obj, string message)
 	{

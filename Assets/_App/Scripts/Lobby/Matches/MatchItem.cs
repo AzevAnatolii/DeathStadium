@@ -3,22 +3,25 @@ using Doozy.Engine.UI;
 using TMPro;
 using UnityEngine;
 
-public class MatchItem : MonoBehaviour
+namespace _App.Scripts.Lobby.Matches
 {
-    [SerializeField] private UIButton _button;
-    [SerializeField] private TextMeshProUGUI _viewMatchName;
-
-    public string Name { get; private set; }
-
-    public void Init(string matchName, Action<string> clickCallback)
+    internal class MatchItem : MonoBehaviour
     {
-        Name = matchName;
-        _viewMatchName.text = $"{matchName}'s room";
-        _button.OnClick.OnTrigger.Action = _ => clickCallback?.Invoke(Name);
-    }
+        [SerializeField] private UIButton _button;
+        [SerializeField] private TextMeshProUGUI _viewMatchName;
 
-    private void OnDestroy()
-    {
-        _button.OnClick.OnTrigger.Action = null;
+        public string Name { get; private set; }
+
+        public void Init(string matchName, Action<string> clickCallback)
+        {
+            Name = matchName;
+            _viewMatchName.text = $"{matchName}'s room";
+            _button.OnClick.OnTrigger.Action = _ => clickCallback?.Invoke(Name);
+        }
+
+        private void OnDestroy()
+        {
+            _button.OnClick.OnTrigger.Action = null;
+        }
     }
 }

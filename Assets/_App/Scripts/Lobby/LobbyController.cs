@@ -1,125 +1,107 @@
+using System;
 using Doozy.Engine.UI;
-using Mirror;
 using TMPro;
 using UnityEngine;
+using _App.Scripts.Network;
+using _App.Scripts.Popups;
 
-internal class LobbyController : NetworkBehaviour
+namespace _App.Scripts.Lobby
 {
-    private const string NAME_KEY = "player_name";
-    
-    public static LobbyController Instance { get; private set; }
+	internal class LobbyController : MonoBehaviour
+	{
+		public static LobbyController Instance { get; private set; }
 
-    [SerializeField] private TMP_Text _userNameText;
-    [SerializeField] private UIButton _registerButton;
-    [SerializeField] private UIButton _playButton;
-    [SerializeField] private UIButton _exitButton;
+		[SerializeField] private TMP_Text _userNameText;
+		[SerializeField] private UIButton _logInButton;
+		[SerializeField] private UIButton _playButton;
+		[SerializeField] private UIButton _exitButton;
 
-    private string _userName;
+		private LogInPopup _logInPopup;
 
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-                
-        Instance = this;
-        Init();
-    }
+		private void Awake()
+		{
+			if (Instance != null)
+			{
+				Destroy(gameObject);
+				return;
+			}
 
-    private void Init()
-    {                                                                  
-        _userName = PlayerPrefs.GetString(NAME_KEY);
-        UpdatePlayerName(Player.LocalPlayer);
-        UpdateView();        
-        _registerButton.OnClick.OnTrigger.Action = OnRegisterButtonClicked;
-        _playButton.OnClick.OnTrigger.Action = OnPlayButtonClicked;
-        _exitButton.OnClick.OnTrigger.Action = OnExitButtonClicked;        
-        DebugExt.Log(this, "Init");
-    }
+			Instance = this;
+			_logInButton.OnClick.OnTrigger.Action = OnLogInButtonClicked;
+			_playButton.OnClick.OnTrigger.Action = OnPlayButtonClicked;
+			_exitButton.OnClick.OnTrigger.Action = OnExitButtonClicked;
+			DebugExt.Log(this, "Awake");
+		}
 
-    private void UpdatePlayerName(Player player)
-    {
-        bool isNameValid = IsNameValid(_userName);
-        if (isNameValid && player != null)
-        {
-            player.SetName(_userName);
-        }
-        else
-        {
-            Player.OnLocalPlayerStart -= OnLocalPlayerStart;
-            Player.OnLocalPlayerStart += OnLocalPlayerStart;
-        }
-    }
+		public void OnAuthorizationResponse(int errorCode, string message)
+		{
+			Debug.Log($"{(ErrorCode)errorCode} - {message}");
+			if (errorCode == (int) ErrorCode.Ok)
+			{
+				if (_logInPopup)
+				{
+					_logInPopup.Hide();
+				}
+				Client.LocalClient.SetLoggedIn(message);
+				UpdateView();
+			}
+			else
+			{
+				if (_logInPopup)
+				{
+					_logInPopup.ShowErrorMessage(message);
+				}
+			}
+		}
 
-    private void OnLocalPlayerStart(Player player)
-    {
-        player.SetName(_userName);    
-        Player.OnLocalPlayerStart -= OnLocalPlayerStart;
-        DebugExt.Log(this, "OnLocalPlayerStart");
-    }
+		private void UpdateView()
+		{
+			bool isClientLoggedIn = IsClientLoggedIn(Client.LocalClient);
+			if (isClientLoggedIn)
+			{
+				_userNameText.text = Client.LocalClient.Name;
+			}
+			_userNameText.transform.parent.gameObject.SetActive(isClientLoggedIn);
+			_playButton.gameObject.SetActive(isClientLoggedIn);
+			_logInButton.gameObject.SetActive(!isClientLoggedIn);
+		}
 
-    private void UpdateView()
-    {
-        bool isNameValid = IsNameValid(_userName);
-        _userNameText.text = _userName;
-        _userNameText.transform.parent.gameObject.SetActive(isNameValid);
-        _playButton.gameObject.SetActive(isNameValid);
-        _registerButton.gameObject.SetActive(!isNameValid);
-    }
+		private bool IsClientLoggedIn(Client client)
+		{
+			return client != null && client.IsLoggedIn && NameChecker.IsNameValid(client.Name);
+		}
 
-    private bool IsNameValid(string s)
-    {
-        return s.Length > 3 && s.Length < 10;
-    }
+		private void OnLogInButtonClicked(GameObject obj)
+		{
+			if (_logInPopup)
+			{
+				_logInPopup.Hide();
+			}
 
-    private void OnRegisterButtonClicked(GameObject obj)
-    {
-        var registerPopup = UIPopupManager.ShowPopup("RegisterPopup", false, false);
-        if (registerPopup.TryGetComponent(out RegisterPopup popup))
-        {
-            popup.Init(OnCreateUserButtonClicked);            
-        }
-        else
-        {
-            Destroy(registerPopup.gameObject);
-        }        
-    }
+			PopupController.TryShowPopup("LogInPopup", out _logInPopup);
+		}
 
-    private void OnCreateUserButtonClicked(string userName)
-    {
-        _userName = userName;
-        PlayerPrefs.SetString(NAME_KEY, userName);
-        Player.LocalPlayer.SetName(userName);
-        UpdateView();
-    }
+		private void OnPlayButtonClicked(GameObject obj)
+		{
+			if (PopupController.TryShowPopup("MatchListPopup", out MatchListPopup popup))
+			{
+				popup.Init(new Action<string>(OnCreateMatchButtonClicked), new Action<string>(OnJoinMatchButtonClicked));
+			}
+		}
 
-    private void OnPlayButtonClicked(GameObject obj)
-    {
-        var matchListPopup = UIPopupManager.ShowPopup("MatchListPopup", false, false);
-        if (matchListPopup.TryGetComponent(out MatchListPopup popup))
-        {
-            popup.Init(OnCreateMatchButtonClicked, OnJoinMatchButtonClicked);            
-        }
-        else
-        {
-            Destroy(matchListPopup.gameObject);
-        }
-    }
+		private void OnCreateMatchButtonClicked(string levelName)
+		{
+				
+		}
 
-    private void OnCreateMatchButtonClicked(string levelName)
-    {
-        Player.LocalPlayer.CreateMatch(levelName);
-    }
+		private void OnJoinMatchButtonClicked(string matchName)
+		{
+			
+		}
 
-    private void OnJoinMatchButtonClicked(string matchName)
-    {
-        Player.LocalPlayer.JoinMatch(matchName);
-    }
-
-    private void OnExitButtonClicked(GameObject obj)
-    {
-        Application.Quit();
-    }
+		private void OnExitButtonClicked(GameObject obj)
+		{
+			Application.Quit();
+		}
+	}
 }

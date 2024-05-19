@@ -1,35 +1,38 @@
 using Mirror;
 using UnityEngine;
 
-public class PlayerMover : NetworkBehaviour
+namespace _App.Scripts.Game
 {
-    [SerializeField] private float _speed;
-    private PlayerInput _input;
-
-    private void Start()
+    internal class PlayerMover : NetworkBehaviour
     {
-        _input = new PlayerInput();
-        _input.Enable();
-    }
+        [SerializeField] private float _speed;
+        private PlayerInput _input;
 
-    private void Update()
-    {
-        if (_input.Input.WASD.IsPressed())
+        private void Start()
         {
-            Vector2 vector = _input.Input.WASD.ReadValue<Vector2>();
-            transform.position += new Vector3(vector.x * _speed, 0, vector.y * _speed);
+            _input = new PlayerInput();
+            _input.Enable();
         }
-    }
 
-    public override void OnStartAuthority()
-    {
-        enabled = true;
-        DebugExt.Log(this, "Mover enabled");
-    }
+        private void Update()
+        {
+            if (_input.Input.WASD.IsPressed())
+            {
+                Vector2 vector = _input.Input.WASD.ReadValue<Vector2>();
+                transform.position += new Vector3(vector.x * _speed, 0, vector.y * _speed);
+            }
+        }
+
+        public override void OnStartAuthority()
+        {
+            enabled = true;
+            DebugExt.Log(this, "Mover enabled");
+        }
     
-    public override void OnStopAuthority()
-    {
-        enabled = false;
-        DebugExt.Log(this, "Mover disabled");
+        public override void OnStopAuthority()
+        {
+            enabled = false;
+            DebugExt.Log(this, "Mover disabled");
+        }
     }
 }

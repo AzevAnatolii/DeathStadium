@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System;
 
-public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
+internal abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 {
 	#region Singleton
 	private static T _instance;
