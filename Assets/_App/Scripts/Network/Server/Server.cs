@@ -3,42 +3,36 @@ using Mirror;
 
 namespace _App.Scripts.Network
 {
-	internal class Server : NetworkBehaviour
+	internal class Server : NetworkSingleton<Server>
 	{
-		public static Server Instance { get; private set; }
+		public Dictionary<string, Client> AuthorizedClients { get; } = new();
 
-		private Dictionary<string, Client> _authorizedClients = new();
-
-		
-		private void Awake()
-		{
-			if (Instance != null)
-			{
-				Destroy(gameObject);
-				return;
-			}
-
-			Instance = this;
-			DontDestroyOnLoad(gameObject);
-		}
 
 		[Server]
-		public void LogInClient(Client client, string clientName)
+		public void TryLogInClient(Client client, string clientName)
 		{
-			DebugExt.Log(this, $"LogIn {clientName}");
-			if (_authorizedClients.ContainsKey(clientName))
-			{
-				client.SendAuthorizationResponse(client.connectionToClient, (int)ErrorCode.BadRequest, $"{clientName} is already exist");
-				return;
-			}
+			ErrorCode errorCode;
+			string message;
 			if (NameChecker.IsNameValid(clientName) == false)
 			{
-				client.SendAuthorizationResponse(client.connectionToClient, (int)ErrorCode.BadRequest, $"{clientName} is not valid name");
-				return;
+				errorCode = ErrorCode.BadRequest;
+				message = $"{clientName} is not valid name";
+			}
+			else if (AuthorizedClients.ContainsKey(clientName))
+			{
+				errorCode = ErrorCode.BadRequest;
+				message = $"{clientName} is already exist";
+			}
+			else
+			{
+				errorCode = ErrorCode.Ok;
+				message = clientName;
+				client.Name = clientName;
+				AuthorizedClients.Add(clientName, client);
 			}
 			
-			_authorizedClients.Add(clientName, client);
-			client.SendAuthorizationResponse(client.connectionToClient, (int)ErrorCode.Ok, clientName);
+			DebugExt.Log(this, $"TryLogInClient {clientName}  {errorCode}  {message}");
+			client.SendAuthorizationResponse(client.connectionToClient, (int)errorCode, message);
 		}
 	}
 }

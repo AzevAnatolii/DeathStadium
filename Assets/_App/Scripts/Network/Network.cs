@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using _App.Scripts.Core;
 
 namespace _App.Scripts.Network
 {
@@ -11,7 +11,9 @@ namespace _App.Scripts.Network
     
         [SerializeField] private bool _connectToAnotherLaptop;
         [SerializeField] private bool _isServer;
+
         private List<Client> _clients = new();
+
 
         public override void Start()
         {
@@ -51,7 +53,7 @@ namespace _App.Scripts.Network
         {
             DebugExt.Log(this, "OnClientConnect");
             base.OnClientConnect();
-            SceneManager.LoadScene("LobbyScene");
+            SceneManagement.Instance.LoadLobby();
         }
 
         public override void OnClientError(TransportError error, string reason)

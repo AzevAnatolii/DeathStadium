@@ -17,8 +17,7 @@ namespace _App.Scripts.Popups
 				return false;
 			}
 
-			popup.SetName(name);
-			popup.Init(args);
+			popup.Init(name, uiPopup, args);
 			RegisterPopup(popup, name);
 			return true;
 		}

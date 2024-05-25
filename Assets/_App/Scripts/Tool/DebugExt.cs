@@ -7,8 +7,8 @@ internal static class DebugExt
 		Debug.Log($"[{obj.GetType().Name}] {message}");	
 	}
 	
-	public static void Log(MonoBehaviour obj, string message)
+	public static void LogWarning(object obj, string message)
 	{
-		Debug.Log($"[{obj.GetType().Name}] {message}");	
+		Debug.LogWarning($"[{obj.GetType().Name}] {message}");	
 	}
 }

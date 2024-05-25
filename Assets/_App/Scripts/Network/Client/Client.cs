@@ -11,7 +11,12 @@ namespace _App.Scripts.Network
 		[SerializeField] private string _name;
 
 		public bool IsLoggedIn { get; private set; }
-		public string Name => _name;
+
+		public string Name
+		{
+			get => _name;
+			set => _name = value;
+		}
 
 		public override void OnStartAuthority()
 		{
@@ -34,14 +39,13 @@ namespace _App.Scripts.Network
 		public void LogIn(string clientName)
 		{
 			DebugExt.Log(this, $"LogIn {clientName}");
-			Server.Instance.LogInClient(this, clientName);
+			Server.Instance.TryLogInClient(this, clientName);
 		}
-		
 		
 		[TargetRpc]
 		public void SendAuthorizationResponse(NetworkConnectionToClient conn, int errorCode, string message)
 		{
-			DebugExt.Log(this, $"SendResponse {(ErrorCode)errorCode} - {message}");
+			DebugExt.Log(this, $"AuthorizationResponse {(ErrorCode)errorCode} - {message}");
 			LobbyController.Instance.OnAuthorizationResponse(errorCode, message);
 		}
 	}

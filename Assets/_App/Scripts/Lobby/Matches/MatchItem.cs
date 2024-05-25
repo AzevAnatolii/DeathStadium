@@ -10,13 +10,13 @@ namespace _App.Scripts.Lobby.Matches
         [SerializeField] private UIButton _button;
         [SerializeField] private TextMeshProUGUI _viewMatchName;
 
-        public string Name { get; private set; }
+        public string HostName { get; private set; }
 
-        public void Init(string matchName, Action<string> clickCallback)
+        public void Init(string hostName, Action<string> clickCallback)
         {
-            Name = matchName;
-            _viewMatchName.text = $"{matchName}'s room";
-            _button.OnClick.OnTrigger.Action = _ => clickCallback?.Invoke(Name);
+            HostName = hostName;
+            _viewMatchName.text = $"{hostName}'s room";
+            _button.OnClick.OnTrigger.Action = _ => clickCallback?.Invoke(HostName);
         }
 
         private void OnDestroy()

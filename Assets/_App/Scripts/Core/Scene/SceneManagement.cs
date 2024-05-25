@@ -1,27 +1,17 @@
 using System.Collections;
-using _App.Scripts.Game;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace _App.Scripts.Core
 {
-    internal class SceneManagement : NetworkBehaviour
+    internal class SceneManagement : NetworkSingleton<SceneManagement>
     {
-        public static SceneManagement Instance { get; private set; }
-
         private readonly LoadSceneParameters _sceneLoadParams = new (LoadSceneMode.Additive);
 
-        private void Awake()
+        public void LoadLobby(LoadSceneMode mode = LoadSceneMode.Single)
         {
-            if (Instance != null)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            SceneManager.LoadScene(1, mode);
         }
 
         [ServerCallback]

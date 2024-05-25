@@ -1,17 +1,14 @@
-using System.Collections.Generic;
-using _App.Scripts.Game;
-
 namespace _App.Scripts.Lobby.Matches
 {
-    internal class Match
+    internal struct Match
     {
-        public readonly List<Player> players = new ();
-
-        public Match() { }
-    
-        public Match(Player player)
+        public readonly string levelName;
+        public readonly string hostName;
+        
+        public Match(string hostName, string levelName)
         {
-            players.Add(player);
+            this.hostName = hostName;
+            this.levelName = levelName;
         }
     }
 }

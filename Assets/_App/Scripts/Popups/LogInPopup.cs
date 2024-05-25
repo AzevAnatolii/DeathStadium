@@ -7,26 +7,15 @@ namespace _App.Scripts.Popups
 {
     internal class LogInPopup : PopupBase
     {
-        [SerializeField] private UIPopup _popup;
         [SerializeField] private TMP_InputField _nameInput;
         [SerializeField] private UIButton _loggInButton;
 
-    
-        private void Start()
+
+        protected override void InitInternal(object[] args)
         {
             _loggInButton.Interactable = false;
             _loggInButton.OnClick.OnTrigger.Action = OnLogInButtonClicked;
             _nameInput.onValueChanged.AddListener(OnChangeValue);
-        }
-
-        private void OnDestroy()
-        {
-            _popup.HideBehavior.OnStart.Action = null;
-        }
-
-        public void Hide()
-        {
-            _popup.Hide();
         }
 
         public void ShowErrorMessage(string message)

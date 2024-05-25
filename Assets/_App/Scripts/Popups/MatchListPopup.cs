@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Doozy.Engine.UI;
-using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using _App.Scripts.Core;
 using _App.Scripts.Lobby.Matches;
+using _App.Scripts.Network;
 
 namespace _App.Scripts.Popups
 {
     internal class MatchListPopup : PopupBase
     {    
-        [SerializeField] private UIPopup _popup;
         [SerializeField] private UIButton _createMatchButton;
         [SerializeField] private UIButton _closeButton;
         [SerializeField] private Transform _listParent;
@@ -24,14 +21,9 @@ namespace _App.Scripts.Popups
         private Action<string> _joinMatchCallback;
 
 
-        private void OnDestroy()
+        protected override void InitInternal(object[] args)
         {
-            _matchItems.Clear();
-        }
-
-        public override void Init(params object[] args)
-        {
-            if (args.Length > 2)
+            if (args.Length > 1)
             {
                 if (args[0] is Action<string> createMatchCallback)
                 {
@@ -42,59 +34,66 @@ namespace _App.Scripts.Popups
                     _joinMatchCallback = joinMatchCallback;
                 }
             }
+            
             _closeButton.OnClick.OnTrigger.Action = OnCloseButtonClicked;
             _createMatchButton.OnClick.OnTrigger.Action = OnCreateMatchButtonClicked;
-
-            _matchItems = new List<MatchItem>();        
+            MatchMaker.Instance.OnListUpdated += OnListUpdated;
+            
+            _matchItems = new List<MatchItem>();
+            Client.LocalClient.UpdateMatches();
         }
 
-        private void CreateMatchItem(string matchName)
+        protected override void OnDestroyInternal()
         {
-            var item = Instantiate(_matchItemPrefab, _listParent, false);
-            item.Init(matchName, OnJoinMatchButtonClicked);
+            _matchItems.Clear();
+        }
+
+        private void OnListUpdated(List<Match> list)
+        {
+            DebugExt.Log(this, $"OnListUpdated {list.Count}");
+            foreach (Match match in list)
+            {
+                if (_matchItems.Exists(x => x.HostName == match.hostName))
+                {
+                    continue;
+                }
+                
+                CreateMatchItem(match);
+            }
+        }
+
+        private void CreateMatchItem(Match match)
+        {
+            MatchItem item = Instantiate(_matchItemPrefab, _listParent, false);
+            item.Init(match.hostName, OnJoinMatchButtonClicked);
             _matchItems.Add(item);
         }
-    
-        private void MatchesOnCallback(SyncIDictionary<string, Scene>.Operation op, string key, Scene item)
+
+        private void RemoveMatchItem(Match match)
         {
-            switch (op)
+            MatchItem item = _matchItems.Find(x => x.HostName == match.hostName);
+            if (item)
             {
-                case SyncIDictionary<string, Scene>.Operation.OP_ADD:
-                    CreateMatchItem(key);
-                    break;
-                case SyncIDictionary<string, Scene>.Operation.OP_CLEAR:
-                    break;
-                case SyncIDictionary<string, Scene>.Operation.OP_REMOVE:
-                    foreach (var match in _matchItems)
-                    {
-                        if (match.Name == key)
-                        {
-                            Destroy(match.gameObject);
-                        }
-                    }
-                    break;
-                case SyncIDictionary<string, Scene>.Operation.OP_SET:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(op), op, null);
+                _matchItems.Remove(item);
+                Destroy(item.gameObject);
             }
         }
 
         private void OnCreateMatchButtonClicked(GameObject obj)
         {
-            _popup.Hide(true);
+            Hide();
             _createMatchCallback?.Invoke(GAME_SCENE_NAME);
         }
     
         private void OnJoinMatchButtonClicked(string matchName)
         {
-            _popup.Hide(true);
+            Hide();
             _joinMatchCallback?.Invoke(matchName);
         }
         
         private void OnCloseButtonClicked(GameObject obj)
         {
-            _popup.Hide(true);
+            Hide();
         }
     }
 }

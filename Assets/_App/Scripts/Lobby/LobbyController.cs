@@ -30,12 +30,10 @@ namespace _App.Scripts.Lobby
 			_logInButton.OnClick.OnTrigger.Action = OnLogInButtonClicked;
 			_playButton.OnClick.OnTrigger.Action = OnPlayButtonClicked;
 			_exitButton.OnClick.OnTrigger.Action = OnExitButtonClicked;
-			DebugExt.Log(this, "Awake");
 		}
 
 		public void OnAuthorizationResponse(int errorCode, string message)
 		{
-			Debug.Log($"{(ErrorCode)errorCode} - {message}");
 			if (errorCode == (int) ErrorCode.Ok)
 			{
 				if (_logInPopup)
@@ -83,15 +81,15 @@ namespace _App.Scripts.Lobby
 
 		private void OnPlayButtonClicked(GameObject obj)
 		{
-			if (PopupController.TryShowPopup("MatchListPopup", out MatchListPopup popup))
-			{
-				popup.Init(new Action<string>(OnCreateMatchButtonClicked), new Action<string>(OnJoinMatchButtonClicked));
-			}
+			string popupName = "MatchListPopup";
+			Action<string> onCreate = OnCreateMatchButtonClicked;
+			Action<string> onJoin = OnJoinMatchButtonClicked;
+			PopupController.TryShowPopup(popupName, out MatchListPopup popup, onCreate, onJoin);
 		}
 
 		private void OnCreateMatchButtonClicked(string levelName)
 		{
-				
+			Client.LocalClient.CreateMatch(levelName);
 		}
 
 		private void OnJoinMatchButtonClicked(string matchName)
