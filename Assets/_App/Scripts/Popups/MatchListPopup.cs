@@ -50,7 +50,6 @@ namespace _App.Scripts.Popups
 
         private void OnListUpdated(List<Match> list)
         {
-            DebugExt.Log(this, $"OnListUpdated {list.Count}");
             foreach (Match match in list)
             {
                 if (_matchItems.Exists(x => x.HostName == match.hostName))

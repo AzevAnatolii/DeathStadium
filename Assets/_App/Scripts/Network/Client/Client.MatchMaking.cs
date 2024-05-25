@@ -8,7 +8,6 @@ namespace _App.Scripts.Network
 		[Command]
 		public void CreateMatch(string levelName)
 		{
-			DebugExt.Log(this, $"CreateMatch {levelName}");
 			MatchMaker.Instance.CreateMatch(this, levelName);
 		}
 		

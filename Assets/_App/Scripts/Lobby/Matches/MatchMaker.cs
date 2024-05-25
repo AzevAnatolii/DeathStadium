@@ -42,9 +42,7 @@ namespace _App.Scripts.Lobby.Matches
 		[Client]
 		public void UpdateMatchesFromJson(string json)
 		{
-			List<Match> list = JsonConvert.DeserializeObject<List<Match>>(json);
-			DebugExt.Log(this, $"UpdateMatches {list.Count}");
-			_matches = list;
+			_matches = JsonConvert.DeserializeObject<List<Match>>(json);
 			OnListUpdated?.Invoke(_matches);
 		}
 	}

@@ -38,7 +38,6 @@ namespace _App.Scripts.Network
 		[Command]
 		public void LogIn(string clientName)
 		{
-			DebugExt.Log(this, $"LogIn {clientName}");
 			Server.Instance.TryLogInClient(this, clientName);
 		}
 		

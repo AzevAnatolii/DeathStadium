@@ -31,7 +31,7 @@ namespace _App.Scripts.Network
 				AuthorizedClients.Add(clientName, client);
 			}
 			
-			DebugExt.Log(this, $"TryLogInClient {clientName}  {errorCode}  {message}");
+			DebugExt.Log(this, $"TryLogInClient {errorCode}  {message}");
 			client.SendAuthorizationResponse(client.connectionToClient, (int)errorCode, message);
 		}
 	}
